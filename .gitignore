@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/.envv
 
 # next.js
 /.next/

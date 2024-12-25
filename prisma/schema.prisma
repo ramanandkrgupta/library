@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String         @id @default(auto()) @map("_id") @db.ObjectId
+  email    String         @unique
+  name     String?
+  role     String // 'admin' or 'member'
+  password String
+  createdAt DateTime @default(now())
+  borrowed BorrowRecord[]
+}
+
+model Book {
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  title        String
+  author       String
+  available    Boolean        @default(true)
+  borrowCount  Int            @default(0)
+  BorrowRecord BorrowRecord[]
+  image        String?
+  description  String?
+  category     String?
+  createdAt    DateTime @default(now())
+}
+
+model BorrowRecord {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String
+  bookId    String
+  issueDate DateTime @default(now())
+  dueDate   DateTime
+  returned  Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+  book      Book     @relation(fields: [bookId], references: [id])
+}
